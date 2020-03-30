@@ -11,11 +11,18 @@ GitHub [https://github.com/bugerry87/sdc.git]
 Tested on:
 
 - Ubuntu 18.04.4 LTS + ROS Melodic 1.14.5 + Python 3.6.9
-- 
+- Ubuntu 16.04 LTS + ROS Kinetic 1.12.7 + Python 3.5.2
 
 ## Requirements
 
+**apt-get**
+
+- python3-tk
+
+**pip3**
+
 - rospy
+- rospkg
 - numpy
 - matplotlib
 
@@ -59,7 +66,12 @@ Press 'r' to reset IMU state,
 
 Now the node subscribes the mantioned topic and is ready to receive data.
 On the other hand, the node published `Marker` messages for each `IMU` message.
-Subscribe the topic `IMUviz/markers` i.e. via rviz and run a rosbag containing IMU messages.
+Subscribe the topic `IMUviz/markers` i.e. via rviz and run a rosbag containing IMU messages i.e.:
+
+```
+$ rviz &
+$ rosbag play -r 0.5 ~/Desktop/sdc_hw3.bag
+```
 
 The node is representing one IMU-sensor.
 
