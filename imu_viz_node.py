@@ -36,7 +36,7 @@ class IMUviz:
         self.reset()
         
         ## init the node
-        self.pub = rospy.Publisher('{}_markers'.format(self.name), Marker, queue_size=1000)
+        self.pub = rospy.Publisher('{}/markers'.format(self.name), Marker, queue_size=1000)
         rospy.Subscriber(self.topic, Imu, self.__update__)
     
     def reset(self):
