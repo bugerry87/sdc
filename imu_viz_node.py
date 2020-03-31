@@ -75,8 +75,8 @@ class IMUviz:
         ## convert data to numpy
         a = np.array([a.x, a.y, a.z]) #.reshape(1,3)
         w = np.array([w.x, w.y, w.z]) * delta
-        d = w.sum()
-        
+        d = np.linalg.norm(w, ord=1)
+                
         ## process Oliver J. Woodman's algo.
         B = np.array([
             0, -w[2], w[1],
