@@ -6,7 +6,7 @@ HW3_0780827 Gerald Baulig
 
 GitHub [https://github.com/bugerry87/sdc.git]
 
-## Enironment
+## Environment
 
 Tested on:
 

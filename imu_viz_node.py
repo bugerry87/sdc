@@ -71,9 +71,6 @@ class IMUviz:
         
         delta = time - self.time
         self.time = time
-        if delta == 0.0:
-            print("Frame Dropped")
-            return
         
         ## convert data to numpy
         a = np.array([a.x, a.y, a.z]) #.reshape(1,3)
