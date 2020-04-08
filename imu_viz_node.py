@@ -66,6 +66,7 @@ class IMUviz:
 
         ## check valid condition
         if self.time == 0.0:
+            IMUviz.GRAVITY = np.array([a.x, a.y, a.z])
             self.time = time
             return
         
