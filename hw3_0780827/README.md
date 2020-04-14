@@ -48,10 +48,12 @@ Done!
 ## Quick Run
 
 For a simple run make sure the file `imu_viz_node.py` is executable.
-Then type:
+Then type ONE of the following lines:
 
 ```
 $ rosrun hw3_0780827 imu_viz_node.py
+//or
+$ roslaunch hw3_0780827 hw3_node
 ```
 
 and the following output should appeare:

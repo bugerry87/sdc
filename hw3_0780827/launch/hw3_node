@@ -1,0 +1,15 @@
+<launch>
+
+  <arg name="node_name"  default="IMUviz" />
+  <arg name="imu_topic"  default="/imu/data"/>
+  <arg name="frame_id" default="frame_id" />
+  
+  <node 
+    pkg="hw3_0780827"
+    name="$(arg node_name)"
+    type="imu_viz_node.py"
+    output="screen"
+    args="-n $(arg node_name) -t $(arg imu_topic) -f $(arg frame_id)"
+  />
+
+</launch>

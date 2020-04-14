@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Let's use sim time! -->
+  <param name="/use_sim_time" value="true"/>
+
+  <!-- Define Arg Params -->
+  <arg name="vo_topic"  default="/zed/odom" />
+  <arg name="imu_topic"  default="/imu/data"/>
+  <arg name="wheel_topic" default="/wheel/odom" />
+  <arg name="ekf_topic" default="/robot_pose_ekf/odom_combined" />
+  <arg name="base_frame" default="base" />
+  <arg name="output_frame" default="output" />
+  <arg name="imu_skip" default="9" />
+  <arg name="imu_use" default="true" />
+  
+  <!-- Setup the Transformer Tree -->
+  <node pkg="tf" type="static_transform_publisher" name="map" args="0 0 0 0 0 1 1 world map 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="output_frame" args="0 0 0 0 0 0 1 map $(arg output_frame) 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_frame" args="0 0 0 0 0 0 1 $(arg output_frame) $(arg base_frame) 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="vo" args="0 0 0 0 0 0 1 map vo 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="imu" args="0 0 0 1 0 0 0 map imu 100"/>
+
+  <!-- Launch our HW4 IMUremap -->
+  <node 
+    pkg="hw4_0780827"
+    name="IMUremap"
+    type="imu_remap_node.py"
+    output="screen"
+    args="-n IMUremap -t $(arg imu_topic) -f map -q 0.99940885 -0.01122809 -0.03247131 0.00122501"
+  />
+
+  <!-- Launch Robot Pose EKF -->
+  <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="screen">
+    <param name="output_frame" value="$(arg output_frame)"/>
+    <param name="base_frame" value="$(arg base_frame)"/>
+    <param name="freq" value="30.0"/>
+    <param name="sensor_timeout" value="1.0"/>
+    <param name="wheel_used" value="false"/>
+    <param name="imu_used" value="$(arg imu_use)"/>
+    <param name="vo_used" value="true"/>
+    <param name="debug" value="false"/>
+
+    <remap from="vo" to="$(arg vo_topic)" />
+    <remap from="imu_data" to="IMUremap/imu_data" />
+    <remap from="wheel" to="$(arg wheel_topic)" />
+  </node>
+  
+  <!-- Launch our HW3 IMUviz -->
+  <node 
+    pkg="hw3_0780827"
+    name="IMUviz"
+    type="imu_viz_node.py"
+    output="screen"
+    args="-n IMUviz -t IMUremap/imu_data -f imu -s $(arg imu_skip)"
+  />
+
+  <!-- Launch our HW4 TrackViz -->
+  <node 
+    pkg="hw4_0780827"
+    name="TrackViz"
+    type="track_viz_node.py"
+    output="screen"
+    args="-n TrackViz -t $(arg ekf_topic) -f $(arg output_frame)"
+  />
+  
+  <!-- Run Rviz-->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find hw4_0780827)/launch/view.rviz" />
+
+</launch>
+
