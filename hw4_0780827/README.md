@@ -1,4 +1,4 @@
-# IMUviz
+# Sensor Fusion with Robot Pose EKF
 
 A ROS node for tracking and visualizing odometry + IMU data based on robot_pose_ekf
 
@@ -59,6 +59,8 @@ $ source ~/catkin_ws/devel/setup.sh
 5. Make all the the packages i.e.: 
 
 ```
+$ catkin_make --pkg robot_pose_ekf_0780827
+$ catkin_make --pkg hw3_0780827
 $ catkin_make --pkg hw4_0780827
 ```
 
