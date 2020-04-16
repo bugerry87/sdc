@@ -88,7 +88,7 @@ if __name__ == '__main__':
         
         parser.add_argument(
             '--target', '-q',
-            metavar='INT',
+            metavar='FLOAT',
             type=float,
             nargs=4,
             default=(0,0,0,0),

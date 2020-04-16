@@ -4,17 +4,18 @@
   <version>0.0.1</version>
   <description>A simple subscriber to track IMU</description>
 
-  <maintainer email="gerald.baulig@gmail.com">Gerry</maintainer>
+  <maintainer email="gerald.baulig@gmail.com">Gerald Baulig</maintainer>
   <license>UNLICENSE</license>
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <exec_depend>argparse</exec_depend>
-  <exec_depend>numpy</exec_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend>
-  <exec_depend>visualization_msgs</exec_depend>
+  <build_depend>argparse</build_depend>
+  <build_depend>numpy</build_depend>
+
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>visualization_msgs</build_depend>
 
 </package>

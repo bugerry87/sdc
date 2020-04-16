@@ -3,12 +3,13 @@
 #ros
 import rospy
 from std_msgs.msg import ColorRGBA
-from geometry_msgs.msg import PoseWithCovarianceStamped as Pose, Point, Vector3
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import PoseWithCovarianceStamped, Point, Vector3
 from visualization_msgs.msg import Marker
 
 
 class TrackViz:
-    def __init__(self, name='TrackViz', topic='~/odom', frame_id='map', skip=0):
+    def __init__(self, name='TrackViz', topic='~/odom', frame_id='map', color=(1,0,0,1), scale=1, _type='PoseWithCovarianceStamped'):
         '''
         Initialize an TrackViz node.
         Subscribes imu data.
@@ -18,18 +19,24 @@ class TrackViz:
             name [str]:     Base name of the node.
             topic [str]:    The topic to be subscribed.
             frame_id [str]: The frame_id in rviz where the markers get plotted at.
+            color [tuple]:  RGBA
+            scale [float]:  Scale of the marker.
         '''
         self.name = name
         self.topic = topic
         self.frame_id = frame_id
-        self.skip = skip
-        self.color = ColorRGBA(0.0,1.0,0.0,1.0)
-        self.scale = Vector3(0.1,0.0,0.0)
+        self.color = ColorRGBA(*color)
+        self.scale = Vector3(scale,0,0)
         self.pub = rospy.Publisher('{}/markers'.format(self.name), Marker, queue_size=1000)
         self.reset()
         
         ## init the node
-        rospy.Subscriber(self.topic, Pose, self.__update__)
+        if _type == 'PoseWithCovarianceStamped':
+            rospy.Subscriber(self.topic, PoseWithCovarianceStamped, self.__update__)
+        elif _type == 'Odometry':
+            rospy.Subscriber(self.topic, Odometry, self.__update__)
+        else:
+            rospy.logwarn("{} message type {} is not supported.".format(rospy.get_caller_id(), _type))
     
     def reset(self):
         '''
@@ -42,7 +49,7 @@ class TrackViz:
         marker.action = marker.DELETEALL
         self.pub.publish(marker)
 
-    def __update__(self, pos:Pose):
+    def __update__(self, pos):
         '''
         Publishes a new marker based on the current state.
         
@@ -109,22 +116,37 @@ if __name__ == '__main__':
             default='map',
             help='The frame_id for rviz to plot the markers at.'
             )
+
+        parser.add_argument(
+            '--color', '-c',
+            metavar='FLOAT',
+            type=float,
+            nargs=4,
+            default=(1,0,0,1),
+            help='The RGBA color of the marker.'
+            )
         
         parser.add_argument(
-            '--skip', '-s',
-            metavar='INT',
-            type=int,
-            default=0,
-            help='Number of frames to be skipped.'
+            '--scale', '-s',
+            metavar='FLOAT',
+            type=float,
+            default=0.1,
+            help='Scale of the markers.'
+            )
+
+        parser.add_argument(
+            '--type', '-x',
+            metavar='STRING',
+            default='PoseWithCovarianceStamped',
+            help='Type of the message.'
             )
         
         return parser
 
 
     args, _ = init_argparse().parse_known_args()
-    rospy.init_node('TrackViz', anonymous=False)
+    rospy.init_node('TrackViz', anonymous=True)
     rospy.loginfo("Init node '{}' on topic '{}'".format(args.base_name, args.topic))
-    imu = TrackViz(args.base_name, args.topic, args.frame_id, args.skip)
+    imu = TrackViz(args.base_name, args.topic, args.frame_id, args.color, args.scale, args.type)
     rospy.loginfo("Node '{}' ready!".format(args.base_name))
     rospy.spin()
-
