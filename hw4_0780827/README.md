@@ -96,6 +96,37 @@ $ rosbag play ~/Desktop/sdc_hw3.bag -r 0.9 --clock
 because `tf` has problem to manage senor data from the past.
 Therefore, we simulate the time-domain of the sensors.
 
+## Sensor Orientation Correction
+
+The IMU is mounted upside-down. Therefore, we need to rotate the IMU data.
+The rotation matix from IMU to camera is provided as:
+
+```
+IMU
+| 0.0225226  0.999745    0.0017194 |
+| 0.0648765 -0.00317777  0.997888  |
+| 0.997639  -0.0223635  -0.0649315 |
+```
+
+While the ZED data is rotated to cameras Z-axis:
+
+```
+ZED
+|  0  0 1 |
+| -1  0 0 |
+|  0 -1 0 |
+```
+
+Hence, we need to combine these rotation matices and extract the quaternion.
+Please check the tool `tools/rmat2quat`.
+The resulting quaternion for the IMU is:
+
+```
+[0.99940885 -0.01122809 -0.03247131 0.00122501].T
+```
+
+This quaternion is used as a parameter for the node `IMUremap` (see `launch/hw4_node`).
+
 ## Q&A
 
 ### 1. What’s the difference between our launch (robot_pose_ekf.launch) file and original launch file? And please explain why we add these modification.
